@@ -14,7 +14,7 @@ db.serialize(function () {
     // Create a table
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT)");
     // db.run("DROP TABLE Users")
-    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT)");
 });
 app.get('/getUsers', (req, res) => {
     db.serialize(async function () {
@@ -100,8 +100,8 @@ app.post('/createOT', (req, res) => {
     const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type } = req.body;
     const { Description: { Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3 } } = req.body;
     db.serialize(async function () {
-        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3]);
+        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3,"Created"]);
     })
     res.setHeader('Access-Control-Allow-Origin', '*').status(200).json({ result: "ok" })
 })
@@ -134,7 +134,6 @@ app.post('/authenticator', (req, res) => {
         console.log(error)
     }
 })
-
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
