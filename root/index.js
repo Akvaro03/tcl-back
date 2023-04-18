@@ -12,13 +12,25 @@ app.use(cors())
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
     // Create a table
+    // db.run("DROP TABLE Clients")
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT)");
-    // db.run("DROP TABLE Users")
-    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS Clients (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
+
+    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT)");
 });
 app.get('/getUsers', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM Users", function (err, row) {
+            if (err) {
+                res.json(err)
+            }
+            res.json(row)
+        })
+    });
+});
+app.get('/getClients', (req, res) => {
+    db.serialize(async function () {
+        db.all("SELECT * FROM Clients", function (err, row) {
             if (err) {
                 res.json(err)
             }
@@ -36,6 +48,18 @@ app.get('/getOT', (req, res) => {
         })
     });
 });
+app.post('/postClients', (req, res) => {
+    let { nameClient, Document, Key, ContactVerificate, BusinessName } = req.body;
+    let DocumentFormat = JSON.stringify(Document)
+    let ContactFormat = JSON.stringify(ContactVerificate)
+    console.log(DocumentFormat)
+    console.log(ContactFormat)
+    db.serialize(async function () {
+        db.run("INSERT INTO Clients (Name, Document, KeyUnique, Contacts,businessName) VALUES (?,?,?,?,?)", [nameClient, DocumentFormat, Key, ContactFormat, BusinessName]);
+    })
+
+    res.json({ state: "ok" })
+})
 app.post('/postUsers', (req, res) => {
     let { name, type, email, password } = req.body;
     let hashedPassword;
@@ -97,11 +121,11 @@ app.post('/editOt', (req, res) => {
     })
 })
 app.post('/createOT', (req, res) => {
-    const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type } = req.body;
+    const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones } = req.body;
     const { Description: { Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3 } } = req.body;
     db.serialize(async function () {
-        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3,"Created"]);
+        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones]);
     })
     res.setHeader('Access-Control-Allow-Origin', '*').status(200).json({ result: "ok" })
 })
@@ -109,7 +133,6 @@ app.post('/login', (req, res) => {
     let { email, password } = req.body;
     try {
         db.get("SELECT * FROM Users WHERE email = ?", [email], function (err, row) {
-            console.log(row)
             row === undefined && res.status(400).json({ result: "error email" });
             row != undefined && bcrypt
                 .compare(password, row.password)
