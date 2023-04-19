@@ -12,10 +12,9 @@ app.use(cors())
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
     // Create a table
-    // db.run("DROP TABLE Clients")
-    db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT)");
+    // db.run("DROP TABLE Users")
+    db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
     db.run("CREATE TABLE IF NOT EXISTS Clients (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
-
     db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT)");
 });
 app.get('/getUsers', (req, res) => {
@@ -73,7 +72,7 @@ app.post('/postUsers', (req, res) => {
         })
         .then(data => {
             db.serialize(async function () {
-                db.run("INSERT INTO Users (name, type, email, password) VALUES (?,?,?,?)", [name, type, email, hashedPassword]);
+                db.run("INSERT INTO Users (name, type, email, password,score) VALUES (?,?,?,?,?)", [name, type, email, hashedPassword, 0]);
             })
         })
         .catch(err => console.error(err.message))
