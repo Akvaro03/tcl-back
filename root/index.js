@@ -59,6 +59,18 @@ app.post('/postClients', (req, res) => {
 
     res.json({ state: "ok" })
 })
+app.post('/getOneUser', (req, res) => {
+    let { name } = req.body;
+    db.serialize(async function () {
+        db.all("SELECT * FROM Users WHERE name = ?", [name], function (err, row) {
+            if (err) {
+                res.json(err)
+            }
+            console.log(row)
+            res.json(row)
+        })
+    });
+})
 app.post('/postUsers', (req, res) => {
     let { name, type, email, password } = req.body;
     let hashedPassword;
@@ -98,6 +110,12 @@ app.post('/editUsers', (req, res) => {
             let UsersString = JSON.stringify(UsersJson);
             db.run("UPDATE Users SET otAssign = ? WHERE id = ?", [UsersString, element.id]);
         });
+    })
+})
+app.post('/editScoreUser', (req, res) => {
+    let userEdit = req.body;
+    db.serialize(async function () {
+        db.run("UPDATE Users SET Score = ? WHERE id = ?", [userEdit.score, userEdit.id]);
     })
 })
 app.post('/editOt', (req, res) => {
