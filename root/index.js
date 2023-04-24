@@ -12,10 +12,11 @@ app.use(cors())
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
     // Create a table
-    // db.run("DROP TABLE Users")
+    db.run("DROP TABLE History")
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
     db.run("CREATE TABLE IF NOT EXISTS Clients (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY, OtID NUMERIC, Changes TEXT)");
 });
 app.get('/getUsers', (req, res) => {
     db.serialize(async function () {
@@ -23,7 +24,7 @@ app.get('/getUsers', (req, res) => {
             if (err) {
                 res.json(err)
             }
-            res.json(row)
+            res.status(200).json(row)
         })
     });
 });
@@ -33,7 +34,7 @@ app.get('/getClients', (req, res) => {
             if (err) {
                 res.json(err)
             }
-            res.json(row)
+            res.status(200).json(row)
         })
     });
 });
@@ -43,22 +44,20 @@ app.get('/getOT', (req, res) => {
             if (err) {
                 res.json(err)
             }
-            res.json(row)
+            res.status(200).json(row)
         })
     });
 });
-app.post('/postClients', (req, res) => {
-    let { nameClient, Document, Key, ContactVerificate, BusinessName } = req.body;
-    let DocumentFormat = JSON.stringify(Document)
-    let ContactFormat = JSON.stringify(ContactVerificate)
-    console.log(DocumentFormat)
-    console.log(ContactFormat)
+app.get('/getHistory', (req, res) => {
     db.serialize(async function () {
-        db.run("INSERT INTO Clients (Name, Document, KeyUnique, Contacts,businessName) VALUES (?,?,?,?,?)", [nameClient, DocumentFormat, Key, ContactFormat, BusinessName]);
-    })
-
-    res.json({ state: "ok" })
-})
+        db.all("SELECT * FROM History", function (err, row) {
+            if (err) {
+                res.json(err)
+            }
+            res.status(200).json(row)
+        })
+    });
+});
 app.post('/getOneUser', (req, res) => {
     let { name } = req.body;
     db.serialize(async function () {
@@ -66,10 +65,19 @@ app.post('/getOneUser', (req, res) => {
             if (err) {
                 res.json(err)
             }
-            console.log(row)
-            res.json(row)
+            res.status(200).json(row)
         })
     });
+})
+app.post('/postClients', (req, res) => {
+    let { nameClient, Document, Key, ContactVerificate, BusinessName } = req.body;
+    let DocumentFormat = JSON.stringify(Document)
+    let ContactFormat = JSON.stringify(ContactVerificate)
+    db.serialize(async function () {
+        db.run("INSERT INTO Clients (Name, Document, KeyUnique, Contacts,businessName) VALUES (?,?,?,?,?)", [nameClient, DocumentFormat, Key, ContactFormat, BusinessName]);
+    })
+
+    res.status(200).json({ result: "ok" })
 })
 app.post('/postUsers', (req, res) => {
     let { name, type, email, password } = req.body;
@@ -89,7 +97,35 @@ app.post('/postUsers', (req, res) => {
         })
         .catch(err => console.error(err.message))
 
-    res.json({ state: "ok" })
+    res.status(200).json({ result: "ok" })
+})
+app.post('/postHistory', (req, res) => {
+    const { idOt, Changes } = req.body;
+    let ChangesString = JSON.stringify([Changes])
+    db.serialize(async function () {
+        db.get("SELECT * FROM History WHERE OtID = ?", [idOt], function (err, row) {
+            if (row === undefined) {
+                db.run("INSERT INTO History (OtID, Changes) VALUES (?,?)",
+                    [idOt, ChangesString]);
+            } else {
+                let ChangesPrev = JSON.parse(row.Changes)
+                ChangesPrev.push(Changes)
+                let ChangesPrevString = JSON.stringify(ChangesPrev)
+                db.run("UPDATE History SET Changes = ? WHERE OtID = ?", [ChangesPrevString, idOt]);
+            }
+        })
+    })
+    res.status(200).json({ result: "ok" })
+})
+app.post('/postOT', (req, res) => {
+    const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones, ContactSelect } = req.body;
+    const { Description: { Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3 } } = req.body;
+    db.serialize(async function () {
+        let contact = JSON.stringify(ContactSelect)
+        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations, Contact) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones, contact]);
+    })
+    res.status(200).json({ result: "ok" })
 })
 app.post('/editUsers', (req, res) => {
     let { state, idOt } = req.body;
@@ -111,11 +147,13 @@ app.post('/editUsers', (req, res) => {
             db.run("UPDATE Users SET otAssign = ? WHERE id = ?", [UsersString, element.id]);
         });
     })
+    res.status(200).json({ result: "ok" })
 })
 app.post('/editScoreUser', (req, res) => {
     let userEdit = req.body;
     db.serialize(async function () {
         db.run("UPDATE Users SET Score = ? WHERE id = ?", [userEdit.score, userEdit.id]);
+        res.status(200).json({ result: "ok" })
     })
 })
 app.post('/editOt', (req, res) => {
@@ -134,18 +172,19 @@ app.post('/editOt', (req, res) => {
             })
             let UsersString = JSON.stringify(UsersJson);
             db.run("UPDATE OT SET Users = ? WHERE id = ? ", [UsersString, idOt]);
+            res.status(200).json({ result: "ok" })
         })
     })
 })
-app.post('/createOT', (req, res) => {
-    const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones } = req.body;
-    const { Description: { Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3 } } = req.body;
+app.post('/editOtState', (req, res) => {
+    let { state, idOt } = req.body;
     db.serialize(async function () {
-        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones]);
-    })
-    res.setHeader('Access-Control-Allow-Origin', '*').status(200).json({ result: "ok" })
+        db.run("UPDATE OT SET StateProcess = ? WHERE id = ? ", [state, idOt]);
+        res.status(200).json({ result: "ok" })
+    }
+    )
 })
+
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
     try {
