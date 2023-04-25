@@ -12,7 +12,7 @@ app.use(cors())
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
     // Create a table
-    db.run("DROP TABLE History")
+    // db.run("DROP TABLE History")
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
     db.run("CREATE TABLE IF NOT EXISTS Clients (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT)");
@@ -62,6 +62,28 @@ app.post('/getOneUser', (req, res) => {
     let { name } = req.body;
     db.serialize(async function () {
         db.all("SELECT * FROM Users WHERE name = ?", [name], function (err, row) {
+            if (err) {
+                res.json(err)
+            }
+            res.status(200).json(row)
+        })
+    });
+})
+app.post('/getOneOt', (req, res) => {
+    let { id } = req.body;
+    db.serialize(async function () {
+        db.all("SELECT * FROM Ot WHERE id = ?", [id], function (err, row) {
+            if (err) {
+                res.json(err)
+            }
+            res.status(200).json(row)
+        })
+    });
+})
+app.post('/getOneHistory', (req, res) => {
+    let { id } = req.body;
+    db.serialize(async function () {
+        db.all("SELECT * FROM History WHERE OtID = ?", [id], function (err, row) {
             if (err) {
                 res.json(err)
             }
