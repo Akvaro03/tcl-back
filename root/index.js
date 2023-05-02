@@ -11,12 +11,11 @@ app.use(cors())
 
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
-    // Create a table
-    // db.run("DROP TABLE History")
+    // db.run("DROP TABLE OT")
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
     db.run("CREATE TABLE IF NOT EXISTS Clients (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date DATETIME, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY, OtID NUMERIC, Changes TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS OT (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT)");
+    // db.run("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY, OtID NUMERIC, Changes TEXT)");
 });
 app.get('/getUsers', (req, res) => {
     db.serialize(async function () {
@@ -140,12 +139,13 @@ app.post('/postHistory', (req, res) => {
     res.status(200).json({ result: "ok" })
 })
 app.post('/postOT', (req, res) => {
-    const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones, ContactSelect } = req.body;
+    const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones, ContactSelect, Changes } = req.body;
     const { Description: { Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3 } } = req.body;
     db.serialize(async function () {
+        let ChangesString = JSON.stringify([Changes])
         let contact = JSON.stringify(ContactSelect)
-        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations, Contact) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones, contact]);
+        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations, Contact, Changes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones, contact, ChangesString]);
     })
     res.status(200).json({ result: "ok" })
 })
@@ -178,6 +178,17 @@ app.post('/editScoreUser', (req, res) => {
         res.status(200).json({ result: "ok" })
     })
 })
+app.post('/editOtChanges', (req, res) => {
+    let { Changes, idOt } = req.body;
+    db.serialize(async function () {
+        db.get("SELECT Changes FROM OT WHERE id = ?", [idOt], function (err, row) {
+            let ChangesPrev = JSON.parse(row.Changes)
+            ChangesPrev.push(Changes.Changes)
+            let ChangesPrevString = JSON.stringify(ChangesPrev)
+            db.run("UPDATE OT SET Changes = ? WHERE id = ?", [ChangesPrevString, idOt]);
+        })
+    })
+})
 app.post('/editOt', (req, res) => {
     let { state, idOt } = req.body;
     db.serialize(async function () {
@@ -206,7 +217,6 @@ app.post('/editOtState', (req, res) => {
     }
     )
 })
-
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
     try {
