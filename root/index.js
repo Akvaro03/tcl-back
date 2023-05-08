@@ -11,6 +11,7 @@ app.use(cors())
 
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
+    // db.run("DROP TABLE Users")
     // db.run("DROP TABLE OT")
     db.run("CREATE TABLE IF NOT EXISTS Users (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
     db.run("CREATE TABLE IF NOT EXISTS Clients (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
@@ -90,6 +91,8 @@ app.post('/getOneHistory', (req, res) => {
         })
     });
 })
+
+
 app.post('/postClients', (req, res) => {
     let { nameClient, Document, Key, ContactVerificate, BusinessName } = req.body;
     let DocumentFormat = JSON.stringify(Document)
@@ -103,6 +106,8 @@ app.post('/postClients', (req, res) => {
 app.post('/postUsers', (req, res) => {
     let { name, type, email, password } = req.body;
     let hashedPassword;
+    const typeString = JSON.stringify(type)
+
     bcrypt
         .genSalt(saltRounds)
         .then(salt => {
@@ -113,12 +118,11 @@ app.post('/postUsers', (req, res) => {
         })
         .then(data => {
             db.serialize(async function () {
-                db.run("INSERT INTO Users (name, type, email, password,score) VALUES (?,?,?,?,?)", [name, type, email, hashedPassword, 0]);
+                db.run("INSERT INTO Users (name, type, email, password,score) VALUES (?,?,?,?,?)", [name, typeString, email, hashedPassword, 0]);
+                res.status(200).json({ result: "ok" })
             })
         })
-        .catch(err => console.error(err.message))
-
-    res.status(200).json({ result: "ok" })
+        .catch(err => res.status(200).json({ result: "false" }))
 })
 app.post('/postHistory', (req, res) => {
     const { idOt, Changes } = req.body;
@@ -149,6 +153,8 @@ app.post('/postOT', (req, res) => {
     })
     res.status(200).json({ result: "ok" })
 })
+
+
 app.post('/editUsers', (req, res) => {
     let { state, idOt } = req.body;
     db.serialize(async function () {
@@ -217,6 +223,8 @@ app.post('/editOtState', (req, res) => {
     }
     )
 })
+
+
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
     try {
@@ -245,6 +253,9 @@ app.post('/authenticator', (req, res) => {
         console.log(error)
     }
 })
+
+
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
