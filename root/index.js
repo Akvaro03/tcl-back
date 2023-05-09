@@ -119,28 +119,10 @@ app.post('/postUsers', (req, res) => {
         .then(data => {
             db.serialize(async function () {
                 db.run("INSERT INTO Users (name, type, email, password,score) VALUES (?,?,?,?,?)", [name, typeString, email, hashedPassword, 0]);
-                res.status(200).json({ result: "ok" })
+                res.status(200).json({ result: "ok user" })
             })
         })
         .catch(err => res.status(200).json({ result: "false" }))
-})
-app.post('/postHistory', (req, res) => {
-    const { idOt, Changes } = req.body;
-    let ChangesString = JSON.stringify([Changes])
-    db.serialize(async function () {
-        db.get("SELECT * FROM History WHERE OtID = ?", [idOt], function (err, row) {
-            if (row === undefined) {
-                db.run("INSERT INTO History (OtID, Changes) VALUES (?,?)",
-                    [idOt, ChangesString]);
-            } else {
-                let ChangesPrev = JSON.parse(row.Changes)
-                ChangesPrev.push(Changes)
-                let ChangesPrevString = JSON.stringify(ChangesPrev)
-                db.run("UPDATE History SET Changes = ? WHERE OtID = ?", [ChangesPrevString, idOt]);
-            }
-        })
-    })
-    res.status(200).json({ result: "ok" })
 })
 app.post('/postOT', (req, res) => {
     const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones, ContactSelect, Changes } = req.body;
@@ -150,8 +132,8 @@ app.post('/postOT', (req, res) => {
         let contact = JSON.stringify(ContactSelect)
         db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations, Contact, Changes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones, contact, ChangesString]);
+        res.status(200).json({ result: "ok ot" })
     })
-    res.status(200).json({ result: "ok" })
 })
 
 
@@ -192,6 +174,7 @@ app.post('/editOtChanges', (req, res) => {
             ChangesPrev.push(Changes.Changes)
             let ChangesPrevString = JSON.stringify(ChangesPrev)
             db.run("UPDATE OT SET Changes = ? WHERE id = ?", [ChangesPrevString, idOt]);
+            res.status(200).json({ result: "ok history" })
         })
     })
 })
