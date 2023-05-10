@@ -99,9 +99,9 @@ app.post('/postClients', (req, res) => {
     let ContactFormat = JSON.stringify(ContactVerificate)
     db.serialize(async function () {
         db.run("INSERT INTO Clients (Name, Document, KeyUnique, Contacts,businessName) VALUES (?,?,?,?,?)", [nameClient, DocumentFormat, Key, ContactFormat, BusinessName]);
+        res.status(200).json({ result: "ok client" })
     })
 
-    res.status(200).json({ result: "ok" })
 })
 app.post('/postUsers', (req, res) => {
     let { name, type, email, password } = req.body;
