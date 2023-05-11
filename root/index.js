@@ -166,6 +166,27 @@ app.post('/editScoreUser', (req, res) => {
         res.status(200).json({ result: "ok" })
     })
 })
+// app.post('/editOneOtChanges', (req, res) => {
+//     const { Changes, idOt } = req.body;
+//     db.serialize(async function () {
+//         const changesString = JSON.stringify(Changes)
+//         db.run("UPDATE OT SET Changes = ? WHERE id = ?", [changesString, idOt]);
+//         res.status(200).json({ result: "ok update history" })
+//     })
+// })
+
+app.post('/editOneOtChanges', async (req, res) => {
+    const { Changes, idOt } = req.body;
+
+    try {
+        db.run("UPDATE OT SET Changes = ? WHERE id = ?", [JSON.stringify(Changes), idOt]);
+        res.status(200).json({ result: "ok update history" })
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 app.post('/editOtChanges', (req, res) => {
     let { Changes, idOt } = req.body;
     db.serialize(async function () {
