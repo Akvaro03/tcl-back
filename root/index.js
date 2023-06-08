@@ -30,12 +30,13 @@ db.serialize(function () {
     // db.run("DROP TABLE OT")
     // db.run("DROP TABLE Config")
     // db.run("DROP TABLE TypeOt")
-    db.run("CREATE TABLE IF NOT EXISTS Clients (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS TypeOt  (id INTEGER PRIMARY KEY, nameType TEXT, Score NUMERIC, Path TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS Config  (id INTEGER PRIMARY KEY, nameCompany TEXT,browserLogo TEXT,companyLogo TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS Users   (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
-    db.run("CREATE TABLE IF NOT EXISTS OT      (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT)");
-    // db.run("CREATE TABLE IF NOT EXISTS History (id INTEGER PRIMARY KEY, OtID NUMERIC, Changes TEXT)");
+    // db.run("DROP TABLE Activities")
+    db.run("CREATE TABLE IF NOT EXISTS Clients    (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS TypeOt     (id INTEGER PRIMARY KEY, nameType TEXT, activities TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS Config     (id INTEGER PRIMARY KEY, nameCompany TEXT,browserLogo TEXT,companyLogo TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS Users      (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
+    db.run("CREATE TABLE IF NOT EXISTS OT         (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC)");
+    db.run("CREATE TABLE IF NOT EXISTS Activities (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC, emit BOOLEAN,time NUMERIC)");
 });
 
 app.get('/getUsers', (req, res) => {
@@ -78,6 +79,16 @@ app.get('/getHistory', (req, res) => {
         })
     });
 });
+app.get('/getActivities', (req, res) => {
+    db.serialize(async function () {
+        db.all("SELECT * FROM Activities", function (err, row) {
+            if (err) {
+                res.json(err)
+            }
+            res.status(200).json(row)
+        })
+    });
+})
 app.get('/getTypeOt', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM TypeOt", function (err, row) {
@@ -198,13 +209,14 @@ app.post('/postUsers', (req, res) => {
 })
 app.post('/postOT', (req, res) => {
     let stringToSend = "ok ot "
-    const { Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones, ContactSelect, Changes } = req.body;
+    const { activities, IdClient, Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observaciones, ContactSelect, Changes } = req.body;
     const { Description: { Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3 } } = req.body;
+
     db.serialize(async function () {
         let ChangesString = JSON.stringify([Changes])
         let contact = JSON.stringify(ContactSelect)
-        // db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations, Contact, Changes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        //     [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones, contact, ChangesString]);
+        db.run("INSERT INTO OT (Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations, Contact, Changes, Auth, Activities, IdClient) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            [Client, Date, RazonSocial, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1, Item2, Description2, Importe2, Item3, Description3, Importe3, "Created", Observaciones, contact, ChangesString, false, activities, IdClient]);
         db.all("SELECT * FROM OT ORDER BY id DESC LIMIT 1", function (err, row) {
             stringToSend += row[0].id
             res.status(200).json({ result: stringToSend })
@@ -236,15 +248,22 @@ app.post('/postConfig', (req, res) => {
     })
 })
 app.post('/postTypeOt', (req, res) => {
-    const { TypeOt, path } = req.body
-    const pathString = JSON.stringify(path)
+    const { name, activities } = req.body
     db.serialize(async function () {
-        db.run("INSERT INTO TypeOt (nameType, Score, Path) VALUES (?,?,?)",
-            [TypeOt.nameType, TypeOt.score, pathString]);
+        db.run("INSERT INTO TypeOt (nameType, activities) VALUES (?,?)",
+            [name, JSON.stringify(activities)]);
     })
     res.status(200).json({ result: "ok Type" })
 })
+app.post('/postActivity', (req, res) => {
+    const { name, score, emit, state, time } = req.body
+    db.serialize(async function () {
+        db.run("INSERT INTO Activities (name, score, emit, time) VALUES (?,?,?,?)",
+            [name, score, emit, time]);
+    })
+    res.status(200).json({ result: "ok Activity" })
 
+})
 
 
 app.post('/editUsers', (req, res) => {
