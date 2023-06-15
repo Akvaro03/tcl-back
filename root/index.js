@@ -35,8 +35,8 @@ db.serialize(function () {
     db.run("CREATE TABLE IF NOT EXISTS TypeOt     (id INTEGER PRIMARY KEY, nameType TEXT, activities TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Config     (id INTEGER PRIMARY KEY, nameCompany TEXT,browserLogo TEXT,companyLogo TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Users      (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
-    db.run("CREATE TABLE IF NOT EXISTS OT         (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, Users TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC)");
-    db.run("CREATE TABLE IF NOT EXISTS Activities (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC, emit BOOLEAN,time NUMERIC)");
+    db.run("CREATE TABLE IF NOT EXISTS OT         (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC)");
+    db.run("CREATE TABLE IF NOT EXISTS Activities (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC, emit BOOLEAN,time NUMERIC, users TEXT, state TEXT)");
 });
 
 app.get('/getUsers', (req, res) => {
@@ -248,18 +248,18 @@ app.post('/postConfig', (req, res) => {
     })
 })
 app.post('/postTypeOt', (req, res) => {
-    const { name, activities } = req.body
+    const { nameType, activities } = req.body
     db.serialize(async function () {
         db.run("INSERT INTO TypeOt (nameType, activities) VALUES (?,?)",
-            [name, JSON.stringify(activities)]);
+            [nameType, JSON.stringify(activities)]);
     })
     res.status(200).json({ result: "ok Type" })
 })
 app.post('/postActivity', (req, res) => {
     const { name, score, emit, state, time } = req.body
     db.serialize(async function () {
-        db.run("INSERT INTO Activities (name, score, emit, time) VALUES (?,?,?,?)",
-            [name, score, emit, time]);
+        db.run("INSERT INTO Activities (name, score, emit, time, users, state) VALUES (?,?,?,?,?,?)",
+            [name, score, emit, time, "[]", "created"]);
     })
     res.status(200).json({ result: "ok Activity" })
 
@@ -311,8 +311,9 @@ app.post('/editOtChanges', (req, res) => {
     db.serialize(async function () {
         db.get("SELECT Changes FROM OT WHERE id = ?", [idOt], function (err, row) {
             let ChangesPrev = JSON.parse(row.Changes)
-            ChangesPrev.push(Changes.Changes)
+            ChangesPrev.push(Changes)
             let ChangesPrevString = JSON.stringify(ChangesPrev)
+            console.log(ChangesPrevString)
             db.run("UPDATE OT SET Changes = ? WHERE id = ?", [ChangesPrevString, idOt]);
             res.status(200).json({ result: "ok history" })
         })
@@ -346,7 +347,22 @@ app.post('/editOtState', (req, res) => {
     }
     )
 })
-
+app.post('/editOtActivities', (req, res) => {
+    const { id, activity } = req.body;
+    db.serialize(async function () {
+        db.run("UPDATE OT SET Activities = ? WHERE id = ? ", [JSON.stringify(activity), id]);
+        res.status(200).json({ result: "ok" })
+    }
+    )
+})
+app.post('/editOtAuth', (req, res) => {
+    const { otId, newAuth } = req.body
+    db.serialize(async function () {
+        db.run("UPDATE OT SET Auth = ? WHERE id = ? ", [newAuth, otId]);
+        res.status(200).json({ result: "ok" })
+    }
+    )
+})
 
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
