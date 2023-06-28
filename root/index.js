@@ -237,7 +237,6 @@ app.post('/postConfig', (req, res) => {
                 console.log(err)
             }
             if (row[0]) {
-                console.log(row)
                 db.run("UPDATE Config SET nameCompany = ? WHERE id = 1", [nameCompany]);
             } else {
                 db.run("INSERT INTO Config (nameCompany, browserLogo, companyLogo) VALUES (?,?,?)",
@@ -256,7 +255,7 @@ app.post('/postTypeOt', (req, res) => {
     res.status(200).json({ result: "ok Type" })
 })
 app.post('/postActivity', (req, res) => {
-    const { name, score, emit, state, time } = req.body
+    const { name, score, emit, time } = req.body
     db.serialize(async function () {
         db.run("INSERT INTO Activities (name, score, emit, time, users, state) VALUES (?,?,?,?,?,?)",
             [name, score, emit, time, "[]", "created"]);
@@ -313,7 +312,6 @@ app.post('/editOtChanges', (req, res) => {
             let ChangesPrev = JSON.parse(row.Changes)
             ChangesPrev.push(Changes)
             let ChangesPrevString = JSON.stringify(ChangesPrev)
-            console.log(ChangesPrevString)
             db.run("UPDATE OT SET Changes = ? WHERE id = ?", [ChangesPrevString, idOt]);
             res.status(200).json({ result: "ok history" })
         })
