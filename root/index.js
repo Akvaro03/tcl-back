@@ -181,7 +181,8 @@ app.post('/postClients', (req, res) => {
     let DocumentFormat = JSON.stringify(Document)
     let ContactFormat = JSON.stringify(ContactVerificate)
     db.serialize(async function () {
-        db.run("INSERT INTO Clients (Name, Document, KeyUnique, Contacts,businessName) VALUES (?,?,?,?,?)", [nameClient, DocumentFormat, Key, ContactFormat, BusinessName]);
+        db.run("INSERT INTO Clients (Name, Document, KeyUnique, Contacts,businessName) VALUES (?,?,?,?,?)",
+            [nameClient, DocumentFormat, Key, ContactFormat, BusinessName]);
         res.status(200).json({ result: "ok client" })
     })
 
