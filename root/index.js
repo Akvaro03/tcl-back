@@ -26,17 +26,19 @@ app.use(cors());
 
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
-    // db.run("DROP TABLE Users")
-    // db.run("DROP TABLE OT")
+    // db.run("DROP TABLE Activities")
+    // db.run("DROP TABLE Factura")
     // db.run("DROP TABLE Config")
     // db.run("DROP TABLE TypeOt")
-    // db.run("DROP TABLE Activities")
+    // db.run("DROP TABLE Users")
+    // db.run("DROP TABLE OT")
+    db.run("CREATE TABLE IF NOT EXISTS Activities (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC, emit BOOLEAN,time NUMERIC, users TEXT, state TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS Factura    (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Clients    (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS TypeOt     (id INTEGER PRIMARY KEY, nameType TEXT, activities TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Config     (id INTEGER PRIMARY KEY, nameCompany TEXT,browserLogo TEXT,companyLogo TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS Users      (id INTEGER PRIMARY KEY, otAssign TEXT,name TEXT, type TEXT, email TEXT, password TEXT, score NUMERIC)");
-    db.run("CREATE TABLE IF NOT EXISTS OT         (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC)");
-    db.run("CREATE TABLE IF NOT EXISTS Activities (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC, emit BOOLEAN,time NUMERIC, users TEXT, state TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS Users      (id INTEGER PRIMARY KEY, Team TEXT,name TEXT, type TEXT, email TEXT, password TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS OT         (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC, Availability TEXT, Factura TEXT)");
 });
 
 app.get('/getUsers', (req, res) => {
@@ -99,6 +101,17 @@ app.get('/getTypeOt', (req, res) => {
         })
     });
 })
+app.get('/getPay', (req, res) => {
+    db.serialize(async function () {
+        db.all("SELECT * FROM Factura", function (err, row) {
+            if (err) {
+                res.json(err)
+            }
+            res.status(200).json(row)
+        })
+    });
+})
+
 
 app.post('/getOneUser', (req, res) => {
     let { name } = req.body;
@@ -202,7 +215,8 @@ app.post('/postUsers', (req, res) => {
         })
         .then(data => {
             db.serialize(async function () {
-                db.run("INSERT INTO Users (name, type, email, password,score) VALUES (?,?,?,?,?)", [name, typeString, email, hashedPassword, 0]);
+                db.run("INSERT INTO Users (name, type, email, password,Team) VALUES (?,?,?,?,?)",
+                    [name, typeString, email, hashedPassword, JSON.stringify([])]);
                 res.status(200).json({ result: "ok user" })
             })
         })
@@ -259,12 +273,20 @@ app.post('/postActivity', (req, res) => {
     const { name, score, emit, time } = req.body
     db.serialize(async function () {
         db.run("INSERT INTO Activities (name, score, emit, time, users, state) VALUES (?,?,?,?,?,?)",
-            [name, score, emit, time, "[]", "created"]);
+            [name, score, emit, time, "[]", "Created"]);
     })
     res.status(200).json({ result: "ok Activity" })
 
 })
+app.post('/postPay', (req, res) => {
+    const { pay } = req.body
+    db.serialize(async function () {
+        db.run("INSERT INTO Factura (dateCreated ,dateExpiration ,id, state) VALUES (?,?,?,?)",
+            [pay.dateCreated, pay.dateExpiration, pay.id, "created"]);
+    })
+    res.status(200).json({ result: "ok Activity" })
 
+})
 
 app.post('/editUsers', (req, res) => {
     let { state, idOt } = req.body;
@@ -319,23 +341,10 @@ app.post('/editOtChanges', (req, res) => {
     })
 })
 app.post('/editOt', (req, res) => {
-    let { state, idOt } = req.body;
+    let { Producto, Marca, Modelo, Cotizacion, Client, id, Date } = req.body;
     db.serialize(async function () {
-        db.all("SELECT * FROM OT WHERE id = ?", [idOt], function (err, row) {
-            let Users = row[0].Users;
-            let UsersJson = Users !== null ? JSON.parse(Users) : { data: [] };
-            state.forEach(element => {
-                let found = UsersJson.data.findIndex(data => data === element.name)
-                if (found > -1) {
-                    element.state === false && UsersJson.data.splice(found, 1)
-                } else {
-                    element.state === true && UsersJson.data.push(element.name)
-                }
-            })
-            let UsersString = JSON.stringify(UsersJson);
-            db.run("UPDATE OT SET Users = ? WHERE id = ? ", [UsersString, idOt]);
-            res.status(200).json({ result: "ok" })
-        })
+        db.run("UPDATE OT SET Producto = ?,Marca = ?,Modelo = ?,Cotizacion = ?,Client = ?,Date=? WHERE id = ? ", [Producto, Marca, Modelo, Cotizacion, Client, Date, id]);
+        res.status(200).json({ result: "ok" })
     })
 })
 app.post('/editOtState', (req, res) => {
@@ -362,6 +371,34 @@ app.post('/editOtAuth', (req, res) => {
     }
     )
 })
+app.post('/editOtAvailability', (req, res) => {
+    const { id, availability } = req.body
+    db.serialize(async function () {
+        db.run("UPDATE OT SET Availability = ? WHERE id = ? ", [availability ? JSON.stringify(availability) : availability, id]);
+        res.status(200).json({ result: "ok" })
+    })
+})
+app.post('/editUserTeam', (req, res) => {
+    const { id, userTeam } = req.body
+    db.serialize(async function () {
+        db.run("UPDATE Users SET Team = ? WHERE id = ? ", [JSON.stringify(userTeam), id]);
+        res.status(200).json({ result: "ok" })
+    })
+})
+app.post('/editOtPay', (req, res) => {
+    const { id, pay } = req.body
+    db.serialize(async function () {
+        db.run("UPDATE OT SET Factura = ? WHERE id = ? ", [JSON.stringify(pay.newList), id]);
+        res.status(200).json({ result: "ok" })
+    })
+})
+app.post('/delete', (req, res) => {
+    db.serialize(async function () {
+        db.run("DELETE FROM Users WHERE email = ?", ["dario@gmail.com"]);
+    })
+})
+
+
 
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
@@ -391,7 +428,6 @@ app.post('/authenticator', (req, res) => {
         console.log(error)
     }
 })
-
 
 
 app.listen(port, () => {
