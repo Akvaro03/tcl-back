@@ -37,7 +37,7 @@ db.serialize(function () {
     db.run("CREATE TABLE IF NOT EXISTS Clients    (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, businessName TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS TypeOt     (id INTEGER PRIMARY KEY, nameType TEXT, activities TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Config     (id INTEGER PRIMARY KEY, nameCompany TEXT,browserLogo TEXT,companyLogo TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS Users      (id INTEGER PRIMARY KEY, Team TEXT,name TEXT, type TEXT, email TEXT, password TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS Users      (id INTEGER PRIMARY KEY, Team TEXT,name TEXT, type TEXT, email TEXT, password TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS OT         (id INTEGER PRIMARY KEY, Client TEXT,Date NUMERIC, RazonSocial TEXT, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Item1 TEXT, Description1 TEXT, Importe1 TEXT,Item2 TEXT, Description2 TEXT, Importe2 TEXT,Item3 TEXT, Description3 TEXT, Importe3 TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC, Availability TEXT, Factura TEXT)");
 });
 
@@ -160,15 +160,16 @@ app.post('/getOneHistory', (req, res) => {
 app.get('/getBrowserLogo', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM Config", function (err, row) {
-            console.log(row[0].browserLogo)
-            res.status(200).sendFile(row[0].browserLogo)
+            const path = __dirname + "/" + row[0].browserLogo
+            res.status(200).sendFile(path)
         })
     })
 })
 app.get('/getCompanyLogo', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM Config", function (err, row) {
-            res.status(200).sendFile(row[0].companyLogo)
+            const path = __dirname + "/" + row[0].companyLogo
+            res.status(200).sendFile(path)
         })
     })
 })
@@ -203,8 +204,8 @@ app.post('/postClients', (req, res) => {
 })
 app.post('/postUsers', (req, res) => {
     let { name, type, email, password } = req.body;
-    let hashedPassword;
     const typeString = JSON.stringify(type)
+    let hashedPassword;
 
     bcrypt
         .genSalt(saltRounds)
@@ -216,8 +217,8 @@ app.post('/postUsers', (req, res) => {
         })
         .then(data => {
             db.serialize(async function () {
-                db.run("INSERT INTO Users (name, type, email, password,Team) VALUES (?,?,?,?,?)",
-                    [name, typeString, email, hashedPassword, JSON.stringify([])]);
+                db.run("INSERT INTO Users (name, type, email, password,Team, state) VALUES (?,?,?,?,?,?)",
+                    [name, typeString, email, hashedPassword, JSON.stringify([]), "active"]);
                 res.status(200).json({ result: "ok user" })
             })
         })
@@ -243,10 +244,8 @@ app.post('/postConfig', (req, res) => {
     const { nameCompany } = req.body
     const file = req.files.file;
     const newPath = __dirname + '/files/';
-    const pathBrowserLogo = `${newPath}${"browserLogo.jpg"}`
+    const pathBrowserLogo = `${newPath}${"browserLogo.png"}`
     const pathCompanyLogo = `${newPath}${"companyLogo.png"}`
-    console.log(pathBrowserLogo)
-    console.log(pathCompanyLogo)
     file[0].mv(pathBrowserLogo)
     file[1].mv(pathCompanyLogo)
     db.serialize(async function () {
@@ -255,10 +254,11 @@ app.post('/postConfig', (req, res) => {
                 console.log(err)
             }
             if (row[0]) {
-                db.run("UPDATE Config SET nameCompany = ?, browserLogo = ?, companyLogo = ? WHERE id = 1", [nameCompany, pathBrowserLogo, pathCompanyLogo]);
+                db.run("UPDATE Config SET nameCompany = ?, browserLogo = ?, companyLogo = ? WHERE id = 1",
+                    [nameCompany, eliminarHastaRoot(pathBrowserLogo), eliminarHastaRoot(pathCompanyLogo)]);
             } else {
                 db.run("INSERT INTO Config (nameCompany, browserLogo, companyLogo) VALUES (?,?,?)",
-                    [nameCompany, pathBrowserLogo, pathCompanyLogo]);
+                    [nameCompany, eliminarHastaRoot(pathBrowserLogo), eliminarHastaRoot(pathCompanyLogo)]);
             }
         })
         res.status(200).json({ result: "ok Config" })
@@ -291,6 +291,25 @@ app.post('/postPay', (req, res) => {
 
 })
 
+
+
+app.post('/editUser', (req, res) => {
+    let { name, type, email, id, state } = req.body;
+    const typeString = JSON.stringify(type)
+    db.serialize(async function () {
+        db.run("UPDATE Users SET name = ?, type = ?, email = ?, state = ? WHERE id = ?",
+            [name, typeString, email, state, id]);
+    })
+    res.status(200).json({ result: "ok" })
+})
+app.post('/editActivity', (req, res) => {
+    let { name, score, time, emit, id } = req.body;
+    db.serialize(async function () {
+        db.run("UPDATE Activities SET name = ?, score = ?, time = ?, emit = ? WHERE id = ?",
+            [name, score, time, emit, id]);
+    })
+    res.status(200).json({ result: "ok" })
+})
 app.post('/editUsers', (req, res) => {
     let { state, idOt } = req.body;
     db.serialize(async function () {
@@ -431,7 +450,14 @@ app.post('/authenticator', (req, res) => {
         console.log(error)
     }
 })
-
+function eliminarHastaRoot(texto) {
+    const indexRoot = texto.indexOf("root");
+    if (indexRoot !== -1) {
+        return texto.slice(indexRoot + 5);
+    } else {
+        return texto;
+    }
+}
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
