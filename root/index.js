@@ -162,8 +162,13 @@ app.post('/getOneHistory', (req, res) => {
 app.get('/getBrowserLogo', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM Config", function (err, row) {
+<<<<<<< Updated upstream
             const path = __dirname + "/" + row[0].browserLogo
             res.status(200).sendFile(path)
+=======
+            console.log(row[0].browserLogo)
+            res.status(200).sendFile(row[0].browserLogo)
+>>>>>>> Stashed changes
         })
     })
 })
@@ -56738,6 +56743,8 @@ app.post('/postConfig', (req, res) => {
     const newPath = __dirname + '/files/';
     const pathBrowserLogo = `${newPath}${"browserLogo.png"}`
     const pathCompanyLogo = `${newPath}${"companyLogo.png"}`
+    console.log(pathBrowserLogo)
+    console.log(pathCompanyLogo)
     file[0].mv(pathBrowserLogo)
     file[1].mv(pathCompanyLogo)
     db.serialize(async function () {
@@ -56746,8 +56753,12 @@ app.post('/postConfig', (req, res) => {
                 console.log(err)
             }
             if (row[0]) {
+<<<<<<< Updated upstream
                 db.run("UPDATE Config SET nameCompany = ?, browserLogo = ?, companyLogo = ? WHERE id = 1",
                     [nameCompany, eliminarHastaRoot(pathBrowserLogo), eliminarHastaRoot(pathCompanyLogo)]);
+=======
+                db.run("UPDATE Config SET nameCompany = ?, browserLogo = ?, companyLogo = ? WHERE id = 1", [nameCompany, pathBrowserLogo, pathCompanyLogo]);
+>>>>>>> Stashed changes
             } else {
                 db.run("INSERT INTO Config (nameCompany, browserLogo, companyLogo) VALUES (?,?,?)",
                     [nameCompany, eliminarHastaRoot(pathBrowserLogo), eliminarHastaRoot(pathCompanyLogo)]);
