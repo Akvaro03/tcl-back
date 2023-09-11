@@ -33,7 +33,7 @@ db.serialize(function () {
     // db.run("DROP TABLE TypeOt")
     // db.run("DROP TABLE Users")
     // db.run("DROP TABLE Factura")
-    db.run("DROP TABLE OT")
+    // db.run("DROP TABLE OT")
     db.run("CREATE TABLE IF NOT EXISTS Activities (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC, emit BOOLEAN,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura    (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Clients    (id INTEGER PRIMARY KEY, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, location TEXT)");
@@ -56799,18 +56799,11 @@ app.post('/postClientsJson', (req, res) => {
 })
 app.post('/postOTJson', (req, res) => {
     const otsData = req.body;
-    const payExample = JSON.stringify({
-        "id": "Prueba",
-        "dateCreated": "",
-        "dateExpiration": "",
-        "datePay": "",
-        "state": "created"
-    });
     db.serialize(async function () {
         for (const otData of otsData) {
             const OT = new OType(otData);
             db.run("INSERT INTO OT (Factura, Client, Date,  Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Item1, Description1, Importe1,Item2, Description2, Importe2,Item3, Description3, Importe3,StateProcess, Observations, Contact, Changes, Auth, Activities, IdClient, OTKey) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                [payExample, OT.Client, OT.Date, OT.Producto, OT.Marca, OT.Modelo, OT.NormaAplicar, OT.Cotizacion, OT.FechaVencimiento, OT.FechaEstimada, OT.Type, OT.Item1, OT.Description1, OT.Importe1, OT.Item2, OT.Description2, OT.Importe2, OT.Item3, OT.Description3, OT.Importe3, OT.StateProcess, OT.Observations, OT.Contact, OT.Changes, 1, OT.Activities, OT.IdClient, OT.OTKey]);
+                [null, OT.Client, OT.Date, OT.Producto, OT.Marca, OT.Modelo, OT.NormaAplicar, OT.Cotizacion, OT.FechaVencimiento, OT.FechaEstimada, OT.Type, OT.Item1, OT.Description1, OT.Importe1, OT.Item2, OT.Description2, OT.Importe2, OT.Item3, OT.Description3, OT.Importe3, OT.StateProcess, OT.Observations, OT.Contact, OT.Changes, 1, OT.Activities, OT.IdClient, OT.OTKey]);
         }
     });
     res.status(200).json({ result: "ok Activity" })
