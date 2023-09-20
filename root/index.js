@@ -3,11 +3,12 @@ const bodyParser = require('body-parser')
 const express = require('express');
 const cors = require('cors')
 
+const multer = require('multer');
 
 
 const port = 4000 || process.env.PORT;
 var sqlite3 = require('sqlite3');
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcryptjs")
 const app = express();
 const saltRounds = 10
 const fs = require('fs');
@@ -56734,22 +56735,27 @@ app.post('/postOT', (req, res) => {
 })
 app.post('/postConfig', (req, res) => {
     const { nameCompany } = req.body
-    const file = req.files.file;
+    const { browserLogo, companyLogo } = req.files;
     const newPath = __dirname + '/files/';
     const pathBrowserLogo = `${newPath}${"browserLogo.png"}`
     const pathCompanyLogo = `${newPath}${"companyLogo.png"}`
-    console.log(pathBrowserLogo)
-    console.log(pathCompanyLogo)
-    file[0].mv(pathBrowserLogo)
-    file[1].mv(pathCompanyLogo)
     db.serialize(async function () {
         db.all("SELECT * FROM Config", function (err, row) {
-            if (err) {
-                console.log(err)
-            }
             if (row[0]) {
-                db.run("UPDATE Config SET nameCompany = ?, browserLogo = ?, companyLogo = ? WHERE id = 1",
-                    [nameCompany, eliminarHastaRoot(pathBrowserLogo), eliminarHastaRoot(pathCompanyLogo)]);
+                if (companyLogo) {
+                    companyLogo.mv(pathCompanyLogo)
+                    db.run("UPDATE Config SET companyLogo = ? WHERE id = 1",
+                        [eliminarHastaRoot(pathCompanyLogo)]);
+                }
+                if (browserLogo) {
+                    browserLogo.mv(pathBrowserLogo)
+                    db.run("UPDATE Config SET browserLogo = ? WHERE id = 1",
+                        [eliminarHastaRoot(pathBrowserLogo)]);
+                }
+                if (nameCompany) {
+                    db.run("UPDATE Config SET nameCompany = ? WHERE id = 1",
+                        [nameCompany])
+                }
             } else {
                 db.run("INSERT INTO Config (nameCompany, browserLogo, companyLogo) VALUES (?,?,?)",
                     [nameCompany, eliminarHastaRoot(pathBrowserLogo), eliminarHastaRoot(pathCompanyLogo)]);
@@ -56758,6 +56764,7 @@ app.post('/postConfig', (req, res) => {
         res.status(200).json({ result: "ok Config" })
     })
 })
+
 app.post('/postTypeOt', (req, res) => {
     const { nameType, activities, abbr } = req.body
     db.serialize(async function () {
@@ -56931,6 +56938,15 @@ app.post('/editOtPay', (req, res) => {
         res.status(200).json({ result: "ok" })
     })
 })
+app.post('/editTypeOt', (req, res) => {
+    const { id, nameType, activities, abbr } = req.body;
+    const stringSql = `UPDATE TypeOt SET ${nameType ? "nameType = ?," : ""} activities = ? ${abbr ? ", abbreviation = ?" : ""}WHERE id = ? `
+    const dataToSend = [nameType, JSON.stringify(activities), abbr, id].filter(item => item !== null)
+    db.serialize(async function () {
+        db.run(stringSql, dataToSend);
+    })
+    res.status(200).json({ result: "ok edit" })
+})
 app.post('/editPay', (req, res) => {
     const { id, datePay } = req.body
     db.serialize(async function () {
@@ -56938,6 +56954,8 @@ app.post('/editPay', (req, res) => {
         res.status(200).json({ result: "ok" })
     })
 })
+
+
 
 app.post('/deleteActivity', (req, res) => {
     const { id } = req.body
@@ -56947,10 +56965,13 @@ app.post('/deleteActivity', (req, res) => {
     })
     res.status(200).json({ result: "ok delete activity" })
 })
-app.post('/delete', (req, res) => {
+app.post('/deleteTypeOt', (req, res) => {
+    const { id } = req.body
     db.serialize(async function () {
-        db.run("DELETE FROM Users WHERE email = ?", ["dario@gmail.com"]);
+        db.run("DELETE FROM TypeOt WHERE id = ?",
+            [id]);
     })
+    res.status(200).json({ result: "ok delete" })
 })
 
 
