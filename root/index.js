@@ -37,8 +37,9 @@ db.serialize(function () {
     // db.run("DROP TABLE newClients")
 
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
-    // const sql = `DELETE FROM Contract WHERE id = 2`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
+    // const sql = `DELETE FROM OT WHERE id = 19`;
+    const sql = `UPDATE users SET type = '["Administracion"]' WHERE type = '["Administrador"]';`;
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura      (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
@@ -248,7 +249,7 @@ app.post('/getOneOt', (req, res) => {
         })
     });
 })
-app.post('/getBrowserLogo', (req, res) => {
+app.get('/getBrowserLogo', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM Config", function (err, row) {
             const path = __dirname + "/" + row[0].browserLogo
@@ -335,22 +336,39 @@ app.post('/postUsers', (req, res) => {
     })
 })
 app.post('/postOT', (req, res) => {
-    let stringToSend = "ok ot "
-    const { contractName, nLacre, Description, Identificación, Activities, IdClient, Date, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observations, Contact, Changes } = req.body;
-    let { Client } = req.body;
+    const { Client, contractName, nLacre, Description, Identificación, Activities, IdClient, Date, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observations, Contact, Changes } = req.body;
     const callbackErrorPostData = new callbackError(res)
-    db.serialize(async function () {
-        let ChangesString = JSON.stringify([Changes])
-        let DescriptionString = JSON.stringify(Description)
-        let contact = JSON.stringify(Contact)
-        db.run("INSERT INTO OT (OTKey, contractName,nLacre, Client, Date, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Description,StateProcess, Observations, Contact, Changes, Auth, Activities, IdClient) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            [Identificación, contractName, nLacre, Client, Date, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type.nameType, DescriptionString, "Created", Observations, contact, ChangesString, false, Activities, IdClient],
-            callbackErrorPostData.isError);
-        db.all("SELECT * FROM OT ORDER BY id DESC LIMIT 1", function (err, row) {
-            stringToSend += row[0] ? row[0].id : 0;
-            res.status(200).json({ result: stringToSend })
-        })
-    })
+
+    async function createOT() {
+        try {
+            const insertQuery = `
+                INSERT INTO OT (
+                    OTKey, contractName, nLacre, Client, Date, Producto, Marca, Modelo, 
+                    NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, 
+                    Description, StateProcess, Observations, Contact, Changes, Auth, 
+                    Activities, IdClient
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `;
+
+            const selectQuery = "SELECT * FROM OT ORDER BY id DESC LIMIT 1";
+
+            db.run(insertQuery, [
+                Identificación, contractName, nLacre, Client, Date, Producto, Marca,
+                Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type,
+                Description, "Created", Observations, Contact, Changes, false, Activities, IdClient
+            ], callbackErrorPostData.isError);
+
+            db.all(selectQuery, function (err, row) {
+                res.status(200).json({ result: row[0] ? row[0].id : 0 })
+            });
+        } catch (err) {
+            console.error("Database error:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+        }
+    }
+
+    db.serialize(createOT);
+    // res.status(200).json({ result: 19})
 })
 app.post('/postConfig', (req, res) => {
     const { nameCompany } = req.body
