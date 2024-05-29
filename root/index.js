@@ -39,7 +39,7 @@ db.serialize(function () {
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
     // const sql = `DELETE FROM OT WHERE id = 19`;
-    const sql = `UPDATE users SET type = '["Administracion"]' WHERE type = '["Administrador"]';`;
+    const sql = `UPDATE Clients SET KeyUnique = 'LABO' WHERE id = 1`;
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura      (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
@@ -582,13 +582,10 @@ app.post('/editPay', (req, res) => {
     })
 })
 app.post('/editClient', (req, res) => {
-    let { nameClient, Document, Key, ContactVerificate, id, location, idEditable } = req.body;
-    let DocumentFormat = JSON.stringify(Document)
-    let ContactFormat = JSON.stringify(ContactVerificate)
-    console.log(location)
+    let { Name, Document, KeyUnique, Contacts, id, location, idEditable } = req.body;
     db.serialize(async function () {
         db.run("UPDATE Clients SET Name = ?,Document = ?,KeyUnique = ?,location = ?,idEditable=?, Contacts = ? WHERE id = ? ",
-            [nameClient, DocumentFormat, Key, location, idEditable, ContactFormat, id]);
+            [Name, Document, KeyUnique, location, idEditable, Contacts, id]);
         res.status(200).json({ result: "ok" })
     })
 })
