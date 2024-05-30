@@ -39,7 +39,8 @@ db.serialize(function () {
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
     // const sql = `DELETE FROM OT WHERE id = 19`;
-    const sql = `UPDATE Clients SET Contacts = "[]" WHERE Contacts = ""`;
+    // const sql = `UPDATE Clients SET Contacts = "[]" WHERE Contacts = ""`;
+    const sql = `UPDATE Activities SET state = "CREATED" WHERE state = "created"`;
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura      (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
@@ -433,7 +434,7 @@ app.post('/postPay', (req, res) => {
     const callbackErrorPostData = new callbackError(res)
     db.serialize(async function () {
         db.run("INSERT INTO Factura (dateCreated ,dateExpiration ,id, state, datePay) VALUES (?,?,?,?,?)",
-            [pay.dateCreated, pay.dateExpiration, pay.id, "created", pay.datePay], callbackErrorPostData.isError);
+            [pay.dateCreated, pay.dateExpiration, pay.id, "Created", pay.datePay], callbackErrorPostData.isError);
     })
     res.status(200).json({ Result: "ok Fact" })
 })
