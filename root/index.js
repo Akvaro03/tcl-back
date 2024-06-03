@@ -295,6 +295,7 @@ app.post('/getOtKey', (req, res) => {
 })
 app.post('/getOTFact', (req, res) => {
     const { id } = req.body
+    console.log(id)
     db.serialize(async function () {
         db.all("SELECT * FROM OT", function (err, row) {
             const OTWithFact = row.filter(ot => {
