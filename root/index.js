@@ -38,9 +38,9 @@ db.serialize(function () {
 
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
-    // const sql = `DELETE FROM OT WHERE id = 19`;
+    // const sql = `DELETE FROM Clients WHERE idEditable = 1111111111`;
     // const sql = `UPDATE Clients SET Contacts = "[]" WHERE Contacts = ""`;
-    const sql = `UPDATE Activities SET state = "CREATED" WHERE state = "created"`;    
+    // const sql = `UPDATE Activities SET state = "CREATED" WHERE state = "created"`;    
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura      (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
@@ -50,8 +50,6 @@ db.serialize(function () {
     db.run("CREATE TABLE IF NOT EXISTS OT           (id INTEGER PRIMARY KEY, priority TEXT, OTKey TEXT, Client TEXT,Date NUMERIC, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Description TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC, Availability TEXT, Factura TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Contract     (id INTEGER PRIMARY KEY, name TEXT, url TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Suggestions  (Observations TEXT,NormaAplicar TEXT)");
-
-
     db.run("CREATE TABLE IF NOT EXISTS Clients      (id INTEGER PRIMARY KEY, idEditable NUMERIC,Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, location TEXT)");
     // db.run("INSERT INTO Clients (id, Name, Document, KeyUnique, Contacts, Location) SELECT * FROM newClients ORDER BY id")
     db.run("CREATE TABLE IF NOT EXISTS newClients   (id NUMERIC, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, location TEXT)");
@@ -310,16 +308,12 @@ app.post('/getOTFact', (req, res) => {
 })
 
 app.post('/postClients', (req, res) => {
-    let { nameClient, Document, Key, ContactVerificate, idEditable, location } = req.body;
-    let DocumentFormat = JSON.stringify(Document)
-    let ContactFormat = JSON.stringify(ContactVerificate)
-
+    let { Name, Document, KeyUnique, Contacts, idEditable, location } = req.body;
     const callbackErrorPostData = new callbackError(res)
-
 
     db.serialize(async function () {
         db.run("INSERT INTO Clients (idEditable, Name, Document, KeyUnique, Contacts, location) VALUES (?,?,?,?,?,?)",
-            [idEditable, nameClient, DocumentFormat, Key, ContactFormat, location], callbackErrorPostData.isError);
+            [idEditable, Name, Document, KeyUnique, Contacts, location], callbackErrorPostData.isError);
         res.status(200).json({ result: "ok client" })
     })
 })
