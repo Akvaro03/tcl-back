@@ -542,6 +542,13 @@ app.post('/editOtAuth', (req, res) => {
     }
     )
 })
+app.post('/editOtDescription', (req, res) => {
+    const { id, Description } = req.body
+    db.serialize(async function () {
+        db.run("UPDATE OT SET Description = ? WHERE id = ? ", [Description ? JSON.stringify(Description) : Description, id]);
+        res.status(200).json({ result: "ok" })
+    })
+})
 app.post('/editOtAvailability', (req, res) => {
     const { id, availability } = req.body
     db.serialize(async function () {
