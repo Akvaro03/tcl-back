@@ -39,7 +39,7 @@ db.serialize(function () {
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
     // const sql = `DELETE FROM Clients WHERE idEditable = 1111111111`;
-    // const sql = `UPDATE Clients SET Contacts = "[]" WHERE Contacts = ""`;
+    // const sql = `UPDATE OT SET Auth = "0" WHERE Contacts = ""`;
     // const sql = `UPDATE Activities SET state = "CREATED" WHERE state = "created"`;    
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
