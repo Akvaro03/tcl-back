@@ -38,8 +38,8 @@ db.serialize(function () {
 
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
-    // const sql = `DELETE FROM Clients WHERE idEditable = 1111111111`;
-    // const sql = `UPDATE OT SET Auth = "0" WHERE Contacts = ""`;
+    // const sql = `DELETE FROM OT WHERE id = 24`;
+    // const sql = `UPDATE OT SET Contact = "[]"`;
     // const sql = `UPDATE Activities SET state = "CREATED" WHERE state = "created"`;    
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
@@ -234,13 +234,10 @@ app.post('/getContract', (req, res) => {
 
 app.post('/getOneOt', (req, res) => {
     let { id } = req.body;
+    console.log(id)
     db.serialize(async function () {
-
-        // db.run("DELETE FROM Ot WHERE id = ?", [id]);
-        // db.run("ALTER TABLE Ot ADD priority TEXT");
-        // db.run("DELETE FROM Clients WHERE id = 505");
-
         db.all("SELECT * FROM Ot WHERE id = ?", [id], function (err, row) {
+            console.log(id)
             if (err) {
                 res.status(200).json({ result: "error" })
             }
