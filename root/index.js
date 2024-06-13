@@ -234,10 +234,8 @@ app.post('/getContract', (req, res) => {
 
 app.post('/getOneOt', (req, res) => {
     let { id } = req.body;
-    console.log(id)
     db.serialize(async function () {
         db.all("SELECT * FROM Ot WHERE id = ?", [id], function (err, row) {
-            console.log(id)
             if (err) {
                 res.status(200).json({ result: "error" })
             }
