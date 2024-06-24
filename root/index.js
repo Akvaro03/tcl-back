@@ -286,18 +286,12 @@ app.post('/getOtKey', (req, res) => {
         })
     });
 })
-app.post('/getOTFact', (req, res) => {
+app.post('/getOneFact', (req, res) => {
     const { id } = req.body
-    console.log(id)
     db.serialize(async function () {
-        db.all("SELECT * FROM OT", function (err, row) {
-            const OTWithFact = row.filter(ot => {
-                if (ot.Factura) {
-                    return JSON.parse(ot.Factura).includes(id)
-                }
-                return false
-            }).map(data => data.OTKey)
-            return "JSON.stringify(OTWithFact)"
+        db.get("SELECT * FROM Factura WHERE id = ?", [id], function (err, row) {
+            console.log(row)
+            res.status(200).json(row ? row : { false: false })
         })
     });
 })
@@ -424,7 +418,7 @@ app.post('/postPay', (req, res) => {
     const callbackErrorPostData = new callbackError(res)
     db.serialize(async function () {
         db.run("INSERT INTO Factura (dateCreated ,dateExpiration ,id, state, datePay) VALUES (?,?,?,?,?)",
-        [pay.dateCreated, pay.dateExpiration, pay.id, "Created", pay.datePay], callbackErrorPostData.isError);    
+            [pay.dateCreated, pay.dateExpiration, pay.id, "Created", pay.datePay], callbackErrorPostData.isError);
     })
     res.status(200).json({ Result: "ok Fact" })
 })
@@ -583,7 +577,7 @@ app.post('/editClient', (req, res) => {
     let { Name, Document, KeyUnique, Contacts, id, location, idEditable } = req.body;
     db.serialize(async function () {
         db.run("UPDATE Clients SET Name = ?,Document = ?,KeyUnique = ?,location = ?,idEditable=?, Contacts = ? WHERE id = ? ",
-        [Name, Document, KeyUnique, location, idEditable, Contacts, id]);
+            [Name, Document, KeyUnique, location, idEditable, Contacts, id]);
         res.status(200).json({ result: "ok" })
     })
 })
