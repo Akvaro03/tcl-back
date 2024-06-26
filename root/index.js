@@ -40,7 +40,7 @@ db.serialize(function () {
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
     // const sql = `DELETE FROM OT WHERE id = 24`;
     // const sql = `UPDATE OT SET Contact = "[]"`;
-    // const sql = `UPDATE Activities SET state = "CREATED" WHERE state = "created"`;    
+    // const sql = `DELETE FROM Factura`;    
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura      (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
@@ -419,8 +419,8 @@ app.post('/postPay', (req, res) => {
     db.serialize(async function () {
         db.run("INSERT INTO Factura (dateCreated ,dateExpiration ,id, state, datePay) VALUES (?,?,?,?,?)",
             [pay.dateCreated, pay.dateExpiration, pay.id, "Created", pay.datePay], callbackErrorPostData.isError);
+        res.status(200).json({ result: "ok Fact" })
     })
-    res.status(200).json({ Result: "ok Fact" })
 })
 app.post('/postClientsJson', (req, res) => {
     const clientsData = req.body;
