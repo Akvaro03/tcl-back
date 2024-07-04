@@ -39,7 +39,7 @@ db.serialize(function () {
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
     // const sql = `DELETE FROM OT WHERE id = 24`;
-    // const sql = `UPDATE OT SET Contact = "[]"`;
+    // const sql = `UPDATE OT SET Availability = null WHERE id = 18`;
     // const sql = `DELETE FROM Factura`;    
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
@@ -446,7 +446,6 @@ app.post('/postOTJson', (req, res) => {
     });
     res.status(200).json({ result: "ok Activity" })
 })
-
 app.post('/editUser', (req, res) => {
     let { name, type, email, id, state, password } = req.body;
     const typeString = JSON.stringify(type)
@@ -507,11 +506,16 @@ app.post('/editOtChanges', (req, res) => {
     })
 })
 app.post('/editOt', (req, res) => {
-    const { contractName, nLacre, Observations, Producto, priority, Marca, Modelo, Cotizacion, Client, id, Date, Contact, FechaVencimiento } = req.body;
-    console.log(contractName)
+    const { contractName, nLacre, Factura, Availability, IdClient, Activities, Auth, Contact, Observations,
+        StateProcess, Description, Type, FechaEstimada, FechaVencimiento, Cotizacion, NormaAplicar,
+        Modelo, Marca, Producto, Date, Client, OTKey, priority, id
+    } = req.body;
+    console.log(JSON.stringify(Availability))
     db.serialize(async function () {
-        db.run("UPDATE OT SET contractName = ?, Observations = ?, nLacre = ?, Contact = ?, priority = ?, FechaVencimiento = ?, Producto = ?,Marca = ?,Modelo = ?,Cotizacion = ?,Client = ?,Date=? WHERE id = ? ",
-            [contractName, Observations, nLacre, Contact, priority, FechaVencimiento, Producto, Marca, Modelo, Cotizacion, Client, Date, id]);
+        db.run("UPDATE OT SET contractName = ?, nLacre = ?, Factura = ?, Availability = ?, IdClient = ?, Activities = ?, Auth = ?,Contact = ?,Observations = ?,StateProcess = ?,Description = ?,Type=?, FechaEstimada = ?, FechaVencimiento = ?,Cotizacion = ?,NormaAplicar = ?,Modelo = ?,Marca = ?,Producto = ?,date=?, Client = ?, OTKey = ?, priority = ? WHERE id = ? ",
+            [contractName, nLacre, Factura, Availability, IdClient, Activities, Auth, Contact, Observations,
+                StateProcess, Description, Type, FechaEstimada, FechaVencimiento, Cotizacion, NormaAplicar,
+                Modelo, Marca, Producto, Date, Client, OTKey, priority, id]);
         res.status(200).json({ result: "ok" })
     })
 })
