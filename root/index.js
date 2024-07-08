@@ -613,7 +613,16 @@ app.post('/deleteUser', (req, res) => {
     res.status(200).json({ result: "ok delete" })
 })
 
-
+app.post('/delete_ot', (req, res) => {
+    const { id } = req.body;
+    db.run("DELETE FROM OT WHERE id = ?", [id], function(err) {
+        if (err) {
+            console.error("Error deleting OT:", err);
+            return res.status(500).json({ result: "error", message: err.message });
+        }
+        res.status(200).json({ result: "ok", message: "OT deleted successfully" });
+    });
+});
 
 app.post('/login', (req, res) => {
     let { email, password } = req.body;
