@@ -39,7 +39,7 @@ db.serialize(function () {
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
     // const sql = `DELETE FROM OT WHERE id = 24`;
-    // const sql = `UPDATE OT SET Availability = null WHERE id = 18`;
+    // const sql = `UPDATE OT SET Availability = null`;
     // const sql = `DELETE FROM Factura`;    
     // db.run(sql);
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
