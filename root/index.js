@@ -38,7 +38,7 @@ db.serialize(function () {
 
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
-    // const sql = `DELETE FROM OT WHERE id = 24`;
+    const sql = `DELETE FROM Contract WHERE id = 4`;
     // const sql = `UPDATE OT SET Availability = null`;
     // const sql = `DELETE FROM Factura`;    
     // db.run(sql);
@@ -224,14 +224,12 @@ app.post('/getOneClient', (req, res) => {
         })
     });
 })
-
 app.post('/getContract', (req, res) => {
     let { Name } = req.body;
     const path = __dirname + "/" + Name
     res.status(200).sendFile(path)
 
 })
-
 app.post('/getOneOt', (req, res) => {
     let { id } = req.body;
     db.serialize(async function () {
@@ -411,6 +409,22 @@ app.post('/postActivity', (req, res) => {
             [name, score, time, "[]", "Created"], callbackErrorPostData.isError)
     })
 
+})
+app.post('/postContract', (req, res) => {
+    const { name } = req.body
+    const { contractFile } = req.files;
+    const nameFormatted = name.replace(/\s/g, '')
+    const newPath = __dirname + '/files/';
+    const contractFilePath = `${newPath}${nameFormatted + ".png"}`
+    contractFile.mv(contractFilePath)
+
+    const callbackErrorPostData = new callbackError(res)
+
+    db.serialize(async function () {
+        db.run("INSERT INTO Contract (name, url) VALUES (?,?)",
+            [name, eliminarHastaRoot(contractFilePath)], callbackErrorPostData.isError);
+        res.status(200).json({ result: "ok Config" })
+    })
 })
 app.post('/postPay', (req, res) => {
     const { pay } = req.body
@@ -615,7 +629,7 @@ app.post('/deleteUser', (req, res) => {
 
 app.post('/delete_ot', (req, res) => {
     const { id } = req.body;
-    db.run("DELETE FROM OT WHERE id = ?", [id], function(err) {
+    db.run("DELETE FROM OT WHERE id = ?", [id], function (err) {
         if (err) {
             console.error("Error deleting OT:", err);
             return res.status(500).json({ result: "error", message: err.message });
