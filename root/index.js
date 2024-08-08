@@ -99,12 +99,11 @@ db.serialize(function () {
 
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
-    const sql = `DELETE FROM Users WHERE id = 19`;
-
-    // const sql = `UPDATE Users SET type = "Administrador del sistema" WHERE type = "Administracion del sistema"`;
+    // const sql = `DELETE FROM Users WHERE id = 19`;
+    // const sql = `UPDATE OT SET Description = NULL WHERE Description = 'undefined'`;
     // db.run(sql);
 
-    // const sql = `DELETE FROM Factura`;    
+    // const sql = `DELETE FROM Factura`;
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura      (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS TypeOt       (id INTEGER PRIMARY KEY, abbreviation TEXT, nameType TEXT, activities TEXT)");
@@ -387,9 +386,9 @@ app.post('/postOT', (req, res) => {
         try {
             const insertQuery = `
                 INSERT INTO OT (
-                    OTKey, contractName, nLacre, Client, Date, Producto, Marca, Modelo, 
-                    NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, 
-                    Description, StateProcess, Observations, Contact, Changes, Auth, 
+                    OTKey, contractName, nLacre, Client, Date, Producto, Marca, Modelo,
+                    NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type,
+                    Description, StateProcess, Observations, Contact, Changes, Auth,
                     Activities, IdClient
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `;
