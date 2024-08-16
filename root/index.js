@@ -99,7 +99,7 @@ db.serialize(function () {
 
     // const sql = `ALTER TABLE TypeOt ADD COLUMN contractName TEXT`;
     // const sql = `ALTER TABLE OT DROP COLUMN nLacre`;
-    // const sql = `DELETE FROM Users WHERE id = 19`;
+    // const sql = `DELETE FROM Contract WHERE id > 3`;
     // const sql = `UPDATE OT SET Description = NULL WHERE Description = 'undefined'`;
     // db.run(sql);
 
@@ -473,6 +473,7 @@ app.post('/postActivity', (req, res) => {
 app.post('/postContract', (req, res) => {
     const { name } = req.body
     const { contractFile } = req.files;
+    console.log("first")
     const nameFormatted = name.replace(/\s/g, '')
     const newPath = __dirname + '/files/';
     const contractFilePath = `${newPath}${nameFormatted + ".png"}`
@@ -483,7 +484,7 @@ app.post('/postContract', (req, res) => {
     db.serialize(async function () {
         db.run("INSERT INTO Contract (name, url) VALUES (?,?)",
             [name, eliminarHastaRoot(contractFilePath)], callbackErrorPostData.isError);
-        res.status(200).json({ result: "ok Config" })
+        res.status(200).json({ result: "ok Contract" })
     })
 })
 app.post('/postPay', (req, res) => {
@@ -519,6 +520,27 @@ app.post('/postOTJson', (req, res) => {
         }
     });
     res.status(200).json({ result: "ok Activity" })
+})
+app.post('/editContract', (req, res) => {
+    const { name, id } = req.body
+    const contractFile = req?.files?.contractFile || null;
+    const nameFormatted = name.replace(/\s/g, '')
+    const newPath = __dirname + '/files/';
+    const contractFilePath = `${newPath}${nameFormatted + ".png"}`
+    const callbackErrorPostData = new callbackError(res)
+    
+    db.serialize(async function () {
+        if (contractFile) {
+            await contractFile.mv(contractFilePath)
+            db.run("UPDATE Contract SET name = ?, url = ? WHERE id = ?",
+                [name, eliminarHastaRoot(contractFilePath), id], callbackErrorPostData.isError);
+            res.status(200).json({ result: "ok Contract" })
+            return
+        }
+        db.run("UPDATE Contract SET name = ? WHERE id = ?",
+            [name, id], callbackErrorPostData.isError);
+        res.status(200).json({ result: "ok Contract" })
+    })
 })
 app.post('/editUser', (req, res) => {
     let { name, type, email, id, state, password } = req.body;
