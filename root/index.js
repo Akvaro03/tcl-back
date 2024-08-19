@@ -473,7 +473,6 @@ app.post('/postActivity', (req, res) => {
 app.post('/postContract', (req, res) => {
     const { name } = req.body
     const { contractFile } = req.files;
-    console.log("first")
     const nameFormatted = name.replace(/\s/g, '')
     const newPath = __dirname + '/files/';
     const contractFilePath = `${newPath}${nameFormatted + ".png"}`
@@ -528,7 +527,7 @@ app.post('/editContract', (req, res) => {
     const newPath = __dirname + '/files/';
     const contractFilePath = `${newPath}${nameFormatted + ".png"}`
     const callbackErrorPostData = new callbackError(res)
-    
+
     db.serialize(async function () {
         if (contractFile) {
             await contractFile.mv(contractFilePath)
@@ -698,6 +697,20 @@ app.post('/deleteTypeOt', (req, res) => {
             [id]);
     })
     res.status(200).json({ result: "ok delete" })
+})
+app.post('/deleteContract', (req, res) => {
+    const { id, url } = req.body
+    try {
+        fs.unlinkSync("root/" + url)
+        db.serialize(async function () {
+            db.run("DELETE FROM Contract WHERE id = ?",
+                [id]);
+        })
+        res.status(200).json({ result: "ok delete" })
+    } catch (error) {
+        console.log(error)
+        res.status(200).json({ result: "error" })
+    }
 })
 app.post('/deleteUser', (req, res) => {
     const { id } = req.body
