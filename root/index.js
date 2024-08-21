@@ -359,7 +359,6 @@ app.post('/getOneFact', (req, res) => {
 app.post('/postClients', (req, res) => {
     let { Name, Document, KeyUnique, Contacts, idEditable, location } = req.body;
     const callbackErrorPostData = new callbackError(res)
-
     db.serialize(async function () {
         db.run("INSERT INTO Clients (idEditable, Name, Document, KeyUnique, Contacts, location) VALUES (?,?,?,?,?,?)",
             [idEditable, Name, Document, KeyUnique, Contacts, location], callbackErrorPostData.isError);
@@ -415,7 +414,10 @@ app.post('/postOT', (req, res) => {
 })
 app.post('/postConfig', (req, res) => {
     const { nameCompany } = req.body
-    const { browserLogo, companyLogo } = req.files;
+
+    const browserLogo = req.files?.browserLogo ? req.files?.browserLogo : null;
+    const companyLogo = req.files?.companyLogo ? req.files?.companyLogo : null;
+
     const newPath = __dirname + '/files/';
     const pathBrowserLogo = `${newPath}${"browserLogo.png"}`
     const pathCompanyLogo = `${newPath}${"companyLogo.png"}`
@@ -697,6 +699,19 @@ app.post('/deleteTypeOt', (req, res) => {
             [id]);
     })
     res.status(200).json({ result: "ok delete" })
+})
+app.post('/deleteClient', (req, res) => {
+    const { id } = req.body
+    try {
+        db.serialize(async function () {
+            db.run("DELETE FROM Clients WHERE idEditable = ?",
+                [id]);
+        })
+        res.status(200).json({ result: "ok delete" })
+    } catch (error) {
+        console.log(error)
+        res.status(200).json({ result: "error" })
+    }
 })
 app.post('/deleteContract', (req, res) => {
     const { id, url } = req.body
