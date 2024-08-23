@@ -24,74 +24,13 @@ app.use(bodyParser.json())
 app.use(fileUpload())
 app.use(cors());
 
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
-// HAY QUE MODIFICAR EN LOS TIPOS EN LOS USUARIOS Y SACARLES LOS PARENTESIS, DEJANDO EL STRING SOLO
 
 var db = new sqlite3.Database('example.db');
 db.serialize(function () {
     // db.run("DROP TABLE Activities")
     // db.run("DROP TABLE Clients")
     // db.run("DROP TABLE Config")
-    // db.run("DROP TABLE TypeOt")
+    // db.run("DROP TABLE TypeOt") 
     // db.run("DROP TABLE Users")
     // db.run("DROP TABLE Nueva_OT")
     // db.run("DROP TABLE OT")
@@ -109,13 +48,32 @@ db.serialize(function () {
     db.run("CREATE TABLE IF NOT EXISTS TypeOt       (id INTEGER PRIMARY KEY, abbreviation TEXT, nameType TEXT, activities TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Config       (id INTEGER PRIMARY KEY, nameCompany TEXT,browserLogo TEXT,companyLogo TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Users        (id INTEGER PRIMARY KEY, name TEXT, type TEXT, email TEXT, password TEXT, state TEXT)");
-    db.run("CREATE TABLE IF NOT EXISTS OT           (id INTEGER PRIMARY KEY, priority TEXT, OTKey TEXT, Client TEXT,Date NUMERIC, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Description TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC, Availability TEXT, Factura TEXT)");
+    db.run("CREATE TABLE IF NOT EXISTS OT           (id INTEGER PRIMARY KEY,nLacre TEXT, contractName TEXT, priority TEXT, OTKey TEXT, Client TEXT,Date NUMERIC, Producto TEXT, Marca TEXT, Modelo TEXT, NormaAplicar TEXT, Cotizacion TEXT, FechaVencimiento DATETIME, FechaEstimada DATETIME, Type TEXT, Description TEXT, StateProcess TEXT, Observations TEXT, Contact TEXT, Changes TEXT, Auth TEXT, Activities TEXT, IdClient NUMERIC, Availability TEXT, Factura TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Contract     (id INTEGER PRIMARY KEY, name TEXT, url TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Suggestions  (Observations TEXT,NormaAplicar TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Clients      (id INTEGER PRIMARY KEY, idEditable NUMERIC,Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, location TEXT)");
-    // db.run("INSERT INTO Clients (id, Name, Document, KeyUnique, Contacts, Location) SELECT * FROM newClients ORDER BY id")
     db.run("CREATE TABLE IF NOT EXISTS newClients   (id NUMERIC, Name TEXT,Document TEXT, KeyUnique TEXT, Contacts TEXT, location TEXT)");
-    // db.run("INSERT INTO newClients (id, Name, Document, KeyUnique, Contacts, location) SELECT id, Name, Document, KeyUnique, Contacts, location FROM Clients");
+
+    // Verificar si existe un usuario con el nombre "Admin"
+    db.get("SELECT COUNT(*) AS count FROM Users WHERE name = 'Admin'", function (err, row) {
+        if (err) {
+            console.error(err.message);
+        } else if (row.count === 0) {
+            // Si no existe, crear el usuario "Admin"
+            encryptPassword("123456789").then(data => {
+                db.run(`INSERT INTO Users (name, type, email, password, state) VALUES ('Admin', 'Administrador del sistema', 'admin@gmail.com', ?, 'active')`, [String(data)], function (err) {
+                    if (err) {
+                        console.error(err.message);
+                    } else {
+                        console.log("Usuario Admin creado exitosamente.");
+                    }
+                });
+            })
+        } else {
+            console.log("Usuario Admin ya existe.");
+        }
+
+    });
 });
 
 app.get('/getContracts', (req, res) => {
@@ -306,16 +264,24 @@ app.post('/getOneOt', (req, res) => {
 app.get('/getBrowserLogo', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM Config", function (err, row) {
-            const path = __dirname + "/" + row[0].browserLogo
-            res.status(200).sendFile(path)
+            if (row[0] && row[0].browserLogo) {
+                const path = __dirname + "/" + row[0].browserLogo
+                res.status(200).sendFile(path)
+            } else {
+                res.status(404).json({ error: 'No browser logo configured' });
+            }
         })
     })
 })
 app.get('/getCompanyLogo', (req, res) => {
     db.serialize(async function () {
         db.all("SELECT * FROM Config", function (err, row) {
-            const path = __dirname + "/" + row[0].companyLogo
-            res.status(200).sendFile(path)
+            if (row[0] && row[0].companyLogo) {
+                const path = __dirname + "/" + row[0].companyLogo
+                res.status(200).sendFile(path)
+            } else {
+                res.status(404).json({ error: 'No company logo configured' });
+            }
         })
     })
 })
@@ -328,8 +294,7 @@ app.get('/getConfig', (req, res) => {
             if (row[0]) {
                 res.status(200).json(row[0].nameCompany)
             } else {
-
-                res.status(200).json({ result: "no hay" })
+                res.status(404).json({ error: 'No company logo configured' });
             }
         })
     });
@@ -379,39 +344,37 @@ app.post('/postUsers', (req, res) => {
 })
 app.post('/postOT', (req, res) => {
     const { Client, contractName, nLacre, Description, Identificación, Activities, IdClient, Date, Producto, Marca, Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type, Observations, Contact, Changes } = req.body;
-    const callbackErrorPostData = new callbackError(res)
+    const callbackErrorPostData = new callbackError(res);
 
-    async function createOT() {
-        try {
-            const insertQuery = `
-                INSERT INTO OT (
-                    OTKey, contractName, nLacre, Client, Date, Producto, Marca, Modelo,
-                    NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type,
-                    Description, StateProcess, Observations, Contact, Changes, Auth,
-                    Activities, IdClient
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `;
+    db.serialize(async function () {
+        const insertQuery = `
+        INSERT INTO OT (
+            OTKey, contractName, nLacre, Client, Date, Producto, Marca, Modelo,
+            NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type,
+            Description, StateProcess, Observations, Contact, Changes, Auth,
+            Activities, IdClient
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
 
-            const selectQuery = "SELECT * FROM OT ORDER BY id DESC LIMIT 1";
+        db.run(insertQuery, [
+            Identificación, contractName, nLacre, Client, Date, Producto, Marca,
+            Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type,
+            Description, "Created", Observations, Contact, Changes, false, Activities, IdClient
+        ], function (err) {
+            if (err) {
+                console.error("Error al ejecutar la consulta:", err.message);
+                return callbackErrorPostData.isError(err);
+            }
 
-            db.run(insertQuery, [
-                Identificación, contractName, nLacre, Client, Date, Producto, Marca,
-                Modelo, NormaAplicar, Cotizacion, FechaVencimiento, FechaEstimada, Type,
-                Description, "Created", Observations, Contact, Changes, false, Activities, IdClient
-            ], callbackErrorPostData.isError);
+            console.log("Fila insertada con ID:", this.lastID);
+        });
 
-            db.all(selectQuery, function (err, row) {
-                res.status(200).json({ result: row[0] ? row[0].id : 0 })
-            });
-        } catch (err) {
-            console.error("Database error:", err);
-            res.status(500).json({ error: "Internal Server Error" });
-        }
-    }
-
-    db.serialize(createOT);
-    // res.status(200).json({ result: 19})
-})
+        const selectQuery = "SELECT * FROM OT ORDER BY id DESC LIMIT 1";
+        db.all(selectQuery, function (err, row) {
+            res.status(200).json({ result: row[0] ? row[0].id : 0 })
+        });
+    });
+});
 app.post('/postConfig', (req, res) => {
     const { nameCompany } = req.body
 
