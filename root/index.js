@@ -41,8 +41,7 @@ db.serialize(function () {
     // const sql = `DELETE FROM Contract WHERE id > 3`;
     // const sql = `UPDATE OT SET Description = NULL WHERE Description = 'undefined'`;
     // db.run(sql);
-
-    // const sql = `DELETE FROM Factura`;
+     // const sql = `DELETE FROM Factura`;
     db.run("CREATE TABLE IF NOT EXISTS Activities   (id INTEGER PRIMARY KEY, name TEXT,score NUMERIC,time NUMERIC, users TEXT, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS Factura      (id TEXT, dateCreated NUMERIC,dateExpiration NUMERIC, datePay NUMERIC, state TEXT)");
     db.run("CREATE TABLE IF NOT EXISTS TypeOt       (id INTEGER PRIMARY KEY, abbreviation TEXT, nameType TEXT, activities TEXT)");
