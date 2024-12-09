@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
 
-const multer = require("multer");
 
 const port = 4000 || process.env.PORT;
 var sqlite3 = require("sqlite3");
